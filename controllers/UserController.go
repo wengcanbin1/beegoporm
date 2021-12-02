@@ -82,26 +82,27 @@ func (c *UserController) AddDo(){
 	}
 }
 
+//用户信息编辑功能：用户名密码等修改
 func (c *UserController) Edit(){
-	userId,_ := c.GetInt("userid")
+	userId,_ := c.GetInt("userid")//从footjs.html传过来的参数，请求参数
 	o := orm.NewOrm()
-	var user = models.UserModel{UserId:userId}
-	o.Read(&user)
+	var user = models.UserModel{UserId:userId}//定义user结构，类似调用构造方法
+	o.Read(&user)//从数据库中读取user的信息
 	user.PassWord = ""
-	c.Data["User"] = user
+	c.Data["User"] = user//把user的信息初始化进来到controller，之后还要传给html view层
 
-	authmap := make(map[int]bool)
+	authmap := make(map[int]bool)//商城权限
 	if len(user.AuthStr) >0 {
-		var authobj []int
+		var authobj []int//权限数组
 		str := []byte(user.AuthStr)//user.AuthStr格式"[1,5]"
-		json.Unmarshal(str, &authobj)
+		json.Unmarshal(str, &authobj)//从user表的json字段里解析出权限
 		fmt.Println(authobj)//[1.5]切片
 		for _,v := range authobj {
 			authmap[v] = true
 		}
 		fmt.Println(authmap)//map[1:true 5:true]
 	}
-	type Menuitem struct {
+	type Menuitem struct {//显示页面中有权限的menu名字：如商城✔
 		Name string
 		Ischeck bool
 	}
@@ -111,10 +112,10 @@ func (c *UserController) Edit(){
 	for _,v := range menu{
 		menus[v.Mid] = Menuitem{v.Name,authmap[v.Mid]}
 	}
-	c.Data["Menus"] = menus
+	c.Data["Menus"] = menus//将models层的数据加到controller层，然后送去view层渲染
 	c.LayoutSections = make(map[string]string)
 	c.LayoutSections["footerjs"] = "user/footerjs_edit.html"
-	c.setTpl("user/edit.html","common/layout_edit.html")
+	c.setTpl("user/edit.html","common/layout_edit.html")//送去view层渲染
 }
 
 func (c *UserController) EditDo(){

@@ -8,8 +8,8 @@ import (
 )
 
 func main() {
-	logs.SetLevel(beego.LevelInformational)
-	logs.SetLogger("file",`{"filename":"logs/test.log"}`)
+	logs.SetLevel(beego.LevelInformational)//设置日志等级
+	logs.SetLogger("file",`{"filename":"logs/test.log"}`)//设置日志文件路径和名称
 	beego.Run()
 }
 

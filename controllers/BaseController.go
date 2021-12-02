@@ -19,6 +19,7 @@ type BaseController struct {
 	Loginuser interface{}
 }
 
+//所有的control方法执行前都会执行prepare方法
 func (c *BaseController) Prepare()  {
 	//获取session
 	//loginuser := c.GetSession("user")
@@ -43,16 +44,17 @@ func (c *BaseController) Prepare()  {
 		c.Loginuser = models.UserModel{}
 	}
 
-	//c.Data["Menu"] = models.MenuStruct()
-	c.Data["Menu"] = models.MenuTreeStruct(user)
+	//c.Data["Menu"] = models.MenuStruct()//把数据赋值成树状结构
+	c.Data["Menu"] = models.MenuTreeStruct(user)//左侧菜单的数据
 	c.Data["IsLogin"] = c.IsLogin
 	c.Data["LoginUser"] = c.Loginuser
 }
 
 //设置模板
-func (c *BaseController) setTpl(template ...string) {
+//第一个参数模板，第二个参数为layout
+func (c *BaseController) setTpl(template ...string) {//template可以输入多个参数
 	var tplName string
-	layout := "common/layout.html"
+	layout := "common/layout.html"//布局来源，默认的layout
 	switch {
 	case len(template) == 1:
 		tplName = template[0]
@@ -79,24 +81,25 @@ func (c *BaseController) jsonResult(code consts.JsonResultCode, msg string, obj 
 	c.StopRun()
 }
 
+//返回一个json格式的list数据
 func (c *BaseController) listJsonResult(code consts.JsonResultCode, msg string, count int64, obj interface{}) {
 	r := &models.ListJsonResult{code, msg, count, obj}
 	c.Data["json"] = r
 	c.ServeJSON()
 	c.StopRun()
 }
-
+//登录用户权限验证，私有方法，返回值是uerModel
 func (c *BaseController) auth() models.UserModel {
-	user := c.GetSession("user")
+	user := c.GetSession("user")//从session里拿出
 	fmt.Println("user",user)
 	if user == nil {
 		c.Redirect("/login", 302)
 		//c.Redirect("http://localhost:9096/authorize?client_id=test_client_3&response_type=code&scope=all&state=xyz&redirect_uri=http://localhost:8080/login", 302)//authorization_code才需要到认证中心授权
 		c.StopRun()
-		return models.UserModel{}
+		return models.UserModel{}//返回空model
 	} else {
 		fmt.Println("get user:",user.(models.UserModel))
-		return user.(models.UserModel)
+		return user.(models.UserModel)//强制类型转换
 	}
 }
 

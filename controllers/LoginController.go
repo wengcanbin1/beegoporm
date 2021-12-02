@@ -8,16 +8,16 @@ import (
 )
 
 type LoginController struct {
-	beego.Controller
+	beego.Controller//基类
 }
 
 //原来独立账号登入
 func (c *LoginController) Index(){
 	method := c.Ctx.Request.Method
 	fmt.Println(method)
-	if c.Ctx.Request.Method == "POST" {
-		userkey := strings.TrimSpace(c.GetString("userkey"))
-		password := strings.TrimSpace(c.GetString("password"))
+	if c.Ctx.Request.Method == "POST" {//请求方法是post
+		userkey := strings.TrimSpace(c.GetString("userkey"))//保存用户输入的userName
+		password := strings.TrimSpace(c.GetString("password"))//保存用户输入的password
 		fmt.Println(userkey)
 		fmt.Println(password)
 		//{{获取sso统一登录令牌
@@ -57,17 +57,17 @@ func (c *LoginController) Index(){
 		//数据库验证
 		if len(userkey) > 0 && len(password) >0 {
 			//password := utils.Md5([]byte(password))//通过utils工具md5密码加密
-			user := models.GetUserByName(userkey)
+			user := models.GetUserByName(userkey)//从数据库获取user对象
 			fmt.Println("set user:", user)
 			if password == user.PassWord{//跟数据库总加密后的密码做比较
-				c.SetSession("user",user)
+				c.SetSession("user",user)//密码正确就把user放到session里
 				//c.SetSession("oauth_token",m["access_token"])//保存令牌
-				c.Redirect("/",302)
-				c.StopRun()
+				c.Redirect("/",302)//跳转到根目录下，重定向，要在routr里写
+				c.StopRun()//登陆后停止controller
 			}
 		}
 	}
-	c.TplName = "login/index.html"
+	c.TplName = "login/index.html"//不是post方法（网页没输入账号密码等表单数据，可能只是刷新了一下）就需要再次直接发送到index.html模板，登录页面
 }
 
 //退出登录

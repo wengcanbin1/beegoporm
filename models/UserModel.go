@@ -29,15 +29,15 @@ func UserList(pageSize, page int) ([]*UserModel, int64){
 
 	offset := (page-1)*pageSize
 	data := make([]*UserModel,0)
-	query.OrderBy("-user_id").Limit(pageSize, offset).All(&data)
+	query.OrderBy("-user_id").Limit(pageSize, offset).All(&data)//实现一个分页操作
 
 	return data,total
 }
 
-
+//根据用户名查找user
 func GetUserByName(userkey string) UserModel{
 	o := orm.NewOrm()
 	user := UserModel{UserKey:userkey}
-	o.Read(&user,"user_key")
+	o.Read(&user,"user_key")//查数据库表
 	return user
 }

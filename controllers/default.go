@@ -18,6 +18,7 @@ func (c *MainController) Get() {
 	//session使用
 	c.SetSession("username", "leixiaotian")
 	user := c.GetSession("username")
+	//输出日志内容
 	logs.Informational("user you loged in")
 	fmt.Println(user)
 

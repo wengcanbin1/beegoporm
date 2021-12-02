@@ -15,7 +15,7 @@ func init() {
 	//menu
 	beego.Router("/menu", &controllers.MenuController{}, "Get:Index")
 	beego.Router("/menu/list", &controllers.MenuController{}, "*:List")
-	beego.Router("/menu/edit", &controllers.MenuController{}, "*:Edit")
+	beego.Router("/menu/edit", &controllers.MenuController{}, "*:Edit")//编辑功能的router
 	beego.Router("/menu/editdo", &controllers.MenuController{}, "*:EditDo")
 	beego.Router("/menu/add", &controllers.MenuController{}, "Get:Add")
 	beego.Router("/menu/adddo", &controllers.MenuController{}, "*:AddDo")
@@ -34,7 +34,7 @@ func init() {
 	beego.Router("/login", &controllers.LoginController{}, "*:Index")
 	beego.Router("/logout", &controllers.LoginController{}, "*:Logout")
 
-	//format
+	//format，定义路径——>对应的方法
 	beego.Router("/format/edit", &controllers.FormatController{}, "Get:Edit")
 	beego.Router("/format/editdo", &controllers.FormatController{}, "*:EditDo")
 
